@@ -8,17 +8,17 @@ package htw.berlin.prog2.ha1;
  */
 public class Calculator {
 
-    private String screen = "0";
+    private String screen = "0"; // aktuelle Zahl auf Screen
 
-    private double latestValue;
+    private double latestValue; // Wert bei der letzten Berechnung
 
     private String latestOperation = "";
 
     private boolean clearPressedOnce = false; // Default: noch nicht gedrückt
 
-    private double lastOperand = 0.0;
+    private double lastOperand = 0.0; // lastValue + Operand = neue lastValue
 
-    private boolean repeatEquals = false;
+    private boolean repeatEquals = false; // Default: "=" noch nicht gedrückt
 
 
     /**
@@ -36,9 +36,9 @@ public class Calculator {
      * @param digit Die Ziffer, deren Taste gedrückt wurde
      */
     public void pressDigitKey(int digit) {
-        if(digit > 9 || digit < 0) throw new IllegalArgumentException();
+        if(digit > 9 || digit < 0) throw new IllegalArgumentException(); // gültige Zahl eingeben
 
-        if(screen.equals("0") || latestValue == Double.parseDouble(screen)) screen = "";
+        if(screen.equals("0") || latestValue == Double.parseDouble(screen)) screen = ""; // Screen wird leer gesetzt für eine neue Zahl
 
         screen = screen + digit;
     }
@@ -56,11 +56,11 @@ public class Calculator {
         if(!clearPressedOnce) { // Wenn C noch nicht gedrückt
             screen = "0";
             clearPressedOnce = true;
-        } else { // Wenn C bereits einmal gedrückt
-            screen = "0";
-            latestOperation = "";
-            latestValue = 0.0;
-            clearPressedOnce = false;
+        } else { // Wenn C bereits einmal gedrückt und nochmal gedrückt wird
+            screen = "0"; // Screen auf 0 gesetzt
+            latestOperation = ""; // Operation wird gelöscht
+            latestValue = 0.0; // Letzter berechneter Wert wird gelöscht
+            clearPressedOnce = false; // C auf default gesetzt
         }
 
     }
@@ -70,13 +70,13 @@ public class Calculator {
      * Addition, Substraktion, Division, oder Multiplikation, welche zwei Operanden benötigen.
      * Beim ersten Drücken der Taste wird der Bildschirminhalt nicht verändert, sondern nur der
      * Rechner in den passenden Operationsmodus versetzt.
-     * Beim zweiten Drücken nach Eingabe einer weiteren Zahl wird direkt des aktuelle Zwischenergebnis
+     * Beim zweiten Drücken nach Eingabe einer weiteren Zahl wird direkt das aktuelle Zwischenergebnis
      * auf dem Bildschirm angezeigt. Falls hierbei eine Division durch Null auftritt, wird "Error" angezeigt.
      * @param operation "+" für Addition, "-" für Substraktion, "x" für Multiplikation, "/" für Division
      */
     public void pressBinaryOperationKey(String operation)  {
-        latestValue = Double.parseDouble(screen);
-        latestOperation = operation;
+        latestValue = Double.parseDouble(screen); // Wert gespeichert für die nächste Berechnung
+        latestOperation = operation; // Operation-Eingabe
     }
 
     /**
@@ -87,16 +87,16 @@ public class Calculator {
      * @param operation "√" für Quadratwurzel, "%" für Prozent, "1/x" für Inversion
      */
     public void pressUnaryOperationKey(String operation) {
-        latestValue = Double.parseDouble(screen);
-        latestOperation = operation;
-        var result = switch(operation) {
-            case "√" -> Math.sqrt(Double.parseDouble(screen));
+        latestValue = Double.parseDouble(screen); // Wert von Screen gespeichert
+        latestOperation = operation; // Operation
+        var result = switch(operation) { // Mit "var" erkennt Compiler intern sofort Datentyp (-> double)
+            case "√" -> Math.sqrt(Double.parseDouble(screen)); // "Double.parseDouble(screen)" ersetzbar durch "latestValue"
             case "%" -> Double.parseDouble(screen) / 100;
             case "1/x" -> 1 / Double.parseDouble(screen);
             default -> throw new IllegalArgumentException();
         };
         screen = Double.toString(result);
-        if(screen.equals("NaN")) screen = "Error";
+        if(screen.equals("NaN")) screen = "Error"; // "NaN" = Not a Number -> kein gültiger Zahlenwert
         if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10); // rundet
 
     }
@@ -120,7 +120,7 @@ public class Calculator {
      * entfernt und der Inhalt fortan als positiv interpretiert.
      */
     public void pressNegativeKey() {
-        screen = screen.startsWith("-") ? screen.substring(1) : "-" + screen;
+        screen = screen.startsWith("-") ? screen.substring(1) : "-" + screen; // wenn ja: schneidet das 0. Zeichen ab "-"
     }
 
     /**
@@ -133,23 +133,23 @@ public class Calculator {
      * und das Ergebnis direkt angezeigt.
      */
     public void pressEqualsKey() {
-        double current = repeatEquals ? lastOperand : Double.parseDouble(screen);
+        double current = repeatEquals ? lastOperand : Double.parseDouble(screen); // Wurde schon "=" einmal gedrückt?
 
         var result = switch(latestOperation) {
-            case "+" -> latestValue + current;
+            case "+" -> latestValue + current; // letztes Ergebnis + Operand
             case "-" -> latestValue - current;
             case "x" -> latestValue * current;
             case "/" -> latestValue / current;
             default -> throw new IllegalArgumentException();
         };
 
-        latestValue = result;
-        lastOperand = current;
-        repeatEquals = true;
+        latestValue = result; // letztes Ergebnis gespeichert
+        lastOperand = current; // Wichtig: letzter Operand gespeichert
+        repeatEquals = true; // = wurde bereits gedrückt
 
         screen = Double.toString(result);
-        if(screen.equals("Infinity")) screen = "Error";
-        if(screen.endsWith(".0")) screen = screen.substring(0,screen.length()-2);
-        if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
+        if(screen.equals("Infinity")) screen = "Error"; // Infinity = Absturz: Eine Zahl zu groß oder Division durch 0
+        if(screen.endsWith(".0")) screen = screen.substring(0,screen.length()-2); // Keine Nachkommastellen nötig bei ".0"
+        if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10); // Zahllänge eingrenzen
     }
 }

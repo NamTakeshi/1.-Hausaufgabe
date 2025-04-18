@@ -92,7 +92,7 @@ class CalculatorTest {
     //TODO hier weitere Tests erstellen
     @Test
     @DisplayName("should change sign of a positive number") // Test-Beschreibung
-    void testToggleNegative() { //Switch
+    void testToggleNegative() { // Switch
         Calculator calc = new Calculator();
 
         // Operation
