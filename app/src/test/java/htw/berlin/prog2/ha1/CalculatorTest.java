@@ -108,6 +108,24 @@ class CalculatorTest {
 
     }
 
+    @Test
+    @DisplayName("should only clear screen on first press of clear key") // not latestOperation & latestValue
+    void testClearScreenOnce() {
+        Calculator calc = new Calculator();
+
+        calc.pressDigitKey(8);
+        calc.pressBinaryOperationKey("+");
+        calc.pressDigitKey(3);
+        calc.pressClearKey(); // Nur letzte Eingabe "3" löschen
+        calc.pressDigitKey(2);
+        calc.pressEqualsKey();
+
+        String expected = "10"; // 8 + 2
+        String actual = calc.readScreen();
+
+        assertEquals(expected, actual);
+    }
+
 
 }
 
