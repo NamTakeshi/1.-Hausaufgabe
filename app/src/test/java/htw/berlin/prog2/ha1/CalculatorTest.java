@@ -90,5 +90,24 @@ class CalculatorTest {
 
 
     //TODO hier weitere Tests erstellen
+    @Test
+    @DisplayName("should change sign of a positive number") // Test-Beschreibung
+    void testToggleNegative() { //Switch
+        Calculator calc = new Calculator();
+
+        // Operation
+        calc.pressDigitKey(5);
+        calc.pressNegativeKey();
+
+        // Erwartetes Ergebnis
+        String expected = "-5";
+        String actual = calc.readScreen();
+
+        // Miteinander vergleichen
+        assertEquals(expected, actual);
+
+    }
+
+
 }
 
