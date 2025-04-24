@@ -114,13 +114,13 @@ class CalculatorTest {
         Calculator calc = new Calculator();
 
         calc.pressDigitKey(8);
-        calc.pressBinaryOperationKey("+");
-        calc.pressDigitKey(3);
-        calc.pressClearKey(); // Nur letzte Eingabe "3" löschen
+        calc.pressBinaryOperationKey("-");
         calc.pressDigitKey(2);
+        calc.pressClearKey(); // Nur letzte Eingabe "3" löschen
+        calc.pressDigitKey(3);
         calc.pressEqualsKey();
 
-        String expected = "10"; // 8 + 2
+        String expected = "5"; // 8 + 2
         String actual = calc.readScreen();
 
         assertEquals(expected, actual);
@@ -131,14 +131,14 @@ class CalculatorTest {
     void testRepeatEqualsKey() {
         Calculator calc = new Calculator();
 
-        calc.pressDigitKey(8);
-        calc.pressBinaryOperationKey("+");
+        calc.pressDigitKey(5);
+        calc.pressBinaryOperationKey("*");
         calc.pressDigitKey(2);
         calc.pressEqualsKey(); // 8 + 2 = 10
         calc.pressEqualsKey(); // 10 + 2 = 12
         calc.pressEqualsKey(); // 12 + 2 = 14
 
-        String expected = "14";
+        String expected = "40";
         String actual = calc.readScreen();
 
         assertEquals(expected, actual);
